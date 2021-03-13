@@ -2,6 +2,7 @@ import sys
 import os
 import logging
 import signal
+import argparse
 from concurrent import futures
 
 import grpc
@@ -28,6 +29,29 @@ def on_exit(signo, frame):
 
 
 def serve():
+    # 实例化
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--host',
+                        nargs="?",
+                        type=str,
+                        default="127.0.0.1",
+                        help="binding host"
+                        )
+    parser.add_argument('--port',
+                        nargs="?",
+                        type=int,
+                        default=50051,
+                        help="the listening port"
+                        )
+    args = parser.parse_args()
+    # command: python3 server.py --port=50052
+    # 2021-02-28 20:03:13.674 | INFO     | __main__:serve:44 - Namespace(host='127.0.0.1', port=50052)
+    logger.info(args)
+    # 2021-02-28 20:03:13.674 | INFO     | __main__:serve:45 - 127.0.0.1
+    logger.info(args.host)
+    # 2021-02-28 20:03:13.675 | INFO     | __main__:serve:46 - 50052
+    logger.info(args.port)
+
     logger.add("logs/user-srv-{time}.log")
     # 1.实例化server，并设置10个线程池
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
@@ -36,9 +60,11 @@ def serve():
     user_pb2_grpc.add_UserServicer_to_server(UserServicer(), server)
 
     # 3.启动 server
-    server.add_insecure_port("[::]:50051")
+    # server.add_insecure_port("[::]:50051")
     # print(f"启动服务: 127.0.0.1:50051")
-    logger.info(f"启动服务: 127.0.0.1:50051")
+    # logger.info(f"启动服务: 127.0.0.1:50051")
+    server.add_insecure_port(f"{args.host}:{args.port}")
+    logger.info(f"启动服务: {args.host}:{args.port}")
 
     # 主进程退出监听，需要引入 signal
     """
