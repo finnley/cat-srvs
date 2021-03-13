@@ -62,3 +62,25 @@ if __name__ == "__main__":
     # 加密验证
     for user in User.select():
         print(pbkdf2_sha256.verify("123456", user.password))
+
+    # python date 转int
+    for user in User.select():
+        import time
+        from datetime import date
+
+        if user.birthday:
+            print(user.birthday)
+            # float 类型 比如: 1615132800
+            u_time = time.mktime(user.birthday.timetuple())
+            print(u_time)
+            # float 转 int 比如: 1615132800
+            print(int(u_time))
+            # int 转 date 比如: 2021-03-08
+            print(date.fromtimestamp(int(u_time)))
+
+    users = User.select()
+    # 没有接受返回值
+    # users.limit(2).offset(2)
+    users = users.limit(2).offset(2)
+    for user in users:
+        print(user.mobile)
