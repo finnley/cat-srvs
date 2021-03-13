@@ -1,3 +1,6 @@
 .idea
 
 .DS_Store
+
+user_srv/__pycache__/
+user_srv/settings/__pycache__/
