@@ -1,11 +1,13 @@
 import time
 
+from loguru import logger
 from user_srv.models.models import User
 from user_srv.proto import user_pb2, user_pb2_grpc
 
 
 class UserServicer(user_pb2_grpc.UserServicer):
     # 获取用户列表
+    @logger.catch
     def GetUserList(self, request: user_pb2.PageInfo, context):
         rsp = user_pb2.UserListResponse()
 
@@ -16,8 +18,6 @@ class UserServicer(user_pb2_grpc.UserServicer):
         # 分页
         # offset start
         start = 0
-        # 第几页
-        page = 1
         # 每页条数 就是 proto 里面的 pageSize
         per_page_number = 10
         if request.pageSize:

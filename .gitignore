@@ -7,3 +7,5 @@ user_srv/settings/__pycache__/
 user_srv/handler/__pycache__/
 user_srv/models/__pycache__/
 user_srv/proto/__pycache__/
+
+user_srv/logs/

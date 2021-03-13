@@ -26,3 +26,9 @@ pip3 install grpcio-tools -i https://pypi.douban.com/simple
 ```
 python3 -m grpc_tools.protoc --python_out=. --grpc_python_out=. -I . user.proto
 ```
+
+#### loguru
+
+```shell script
+pip3 install loguru -i https://pypi.douban.com/simple
+```
