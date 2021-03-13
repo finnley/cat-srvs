@@ -38,3 +38,27 @@ class User(BaseModel):
 if __name__ == "__main__":
     # 生成用户表结构
     settings.DB.create_tables([User])
+
+    # md5
+    import hashlib
+    m = hashlib.md5()
+    m.update(b"123456")
+    # 获取加密后md5值
+    print(m.hexdigest())
+    # 加密
+    # import the hash algorithm
+    from passlib.hash import pbkdf2_sha256
+    hash = pbkdf2_sha256.hash("123456")
+    print(hash)
+    print(pbkdf2_sha256.verify("123456", hash))
+    print(pbkdf2_sha256.verify("1234567", hash))
+    # 生成用户并加密用户密码
+    # for i in range(10):
+    #     user = User()
+    #     user.nickname = f"finnley-{i}"
+    #     user.mobile = f"1331234567{i}"
+    #     user.password = pbkdf2_sha256.hash("123456")
+    #     user.save()
+    # 加密验证
+    for user in User.select():
+        print(pbkdf2_sha256.verify("123456", user.password))
