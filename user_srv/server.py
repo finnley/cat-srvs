@@ -23,6 +23,8 @@ from user_srv.handler.user import UserServicer
 # 健康检查
 from common.grpc_health.v1 import health_pb2, health_pb2_grpc
 from common.grpc_health.v1 import health
+from common.register import consul
+from user_srv.settings import settings
 
 
 def on_exit(signo, frame):
@@ -81,6 +83,16 @@ def serve():
     signal.signal(signal.SIGTERM, on_exit)
 
     server.start()
+
+    # 服务注册
+    logger.info(f"服务注册开始")
+    register = consul.ConsulRegister(settings.CONSUL_HOST, settings.CONSUL_PORT)
+    if not register.register(service_name=settings.SERVICE_NAME, service_id=settings.SERVICE_NAME, address=args.host, port=args.port, tags=settings.SERVICE_TAGS, check=None):
+        logger.error(f"服务注册失败")
+        # 注册失败则退出
+        sys.exit(0)
+    logger.info("服务注册成功")
+
     # 加上这一句，否则一旦start,主程序就结束了，其他的相关线程就关闭了
     server.wait_for_termination()
 
