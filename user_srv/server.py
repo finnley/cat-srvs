@@ -20,6 +20,9 @@ sys.path.insert(0, BASE_DIR)
 
 from user_srv.proto import user_pb2, user_pb2_grpc
 from user_srv.handler.user import UserServicer
+# 健康检查
+from common.grpc_health.v1 import health_pb2, health_pb2_grpc
+from common.grpc_health.v1 import health
 
 
 def on_exit(signo, frame):
@@ -34,7 +37,7 @@ def serve():
     parser.add_argument('--host',
                         nargs="?",
                         type=str,
-                        default="127.0.0.1",
+                        default="192.168.1.13",
                         help="binding host"
                         )
     parser.add_argument('--port',
@@ -56,7 +59,9 @@ def serve():
     # 1.实例化server，并设置10个线程池
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
 
-    # 2.注册逻辑到 server
+    # 注册健康检查
+    health_pb2_grpc.add_HealthServicer_to_server(health.HealthServicer(), server)
+    # 2.注册用户服务到 server
     user_pb2_grpc.add_UserServicer_to_server(UserServicer(), server)
 
     # 3.启动 server

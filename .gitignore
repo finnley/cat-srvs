@@ -8,4 +8,8 @@ user_srv/handler/__pycache__/
 user_srv/models/__pycache__/
 user_srv/proto/__pycache__/
 
+common/__pycache__/
+common/grpc_health/__pycache__/
+common/grpc_health/v1/__pycache__/
+
 user_srv/logs/
